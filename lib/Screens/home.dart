@@ -19,26 +19,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Deep Clinic"),
-					actions: [SearchPatient()],
-          bottom: TabBar(
-            tabs: [
-              Tab(child: Text("New Patient")),
-              Tab(child: Text("Search")),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            NewPatient(),
-            SearchPatient(),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Deep Clinic"),
+        actions: [SearchPatient()],
       ),
+      body: NewPatient(),
+      // SearchPatient(),
     );
   }
 }
