@@ -24,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Deep Clinic"),
+					actions: [SearchPatient()],
           bottom: TabBar(
             tabs: [
               Tab(child: Text("New Patient")),

@@ -11,28 +11,17 @@ class SearchPatient extends StatefulWidget {
 class _SearchPatientState extends State<SearchPatient> {
   @override
   Widget build(BuildContext context) {
-    final data = Provider.of<Patients>(context, listen: false).data;
-    return Column(
-      children: [
-        ElevatedButton(
-          child: Text("Search"),
-          onPressed: () async {
-            showSearch(
-              context: context,
-              delegate: CustomDelegate(data),
-            );
-          },
-        ),
-
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: data.length,
-        //     itemBuilder: (ctx, i) => ListTile(
-        //       title: Text(data[i]["name"]),
-        //     ),
-        //   ),
-        // ),
-      ],
+    return IconButton(
+      icon: Icon(Icons.search),
+      onPressed: () {
+        final data = Provider.of<Patients>(context, listen: false).data;
+        print("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+        print(data);
+        showSearch(
+          context: context,
+          delegate: CustomDelegate(data),
+        );
+      },
     );
   }
 }
