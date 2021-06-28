@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/patients.dart';
-import './patientDetailScreen.dart';
+import '../Screens/patientDetailScreen.dart';
 
 class SearchPatient extends StatefulWidget {
   @override
