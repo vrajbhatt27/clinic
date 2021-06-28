@@ -2,7 +2,6 @@ import 'package:clinic/Providers/patients.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Widgets/searchPatient.dart';
-// import './newPatientScreen.dart';
 import '../Widgets/patientFormNew.dart';
 
 class MyHomePage extends StatefulWidget {

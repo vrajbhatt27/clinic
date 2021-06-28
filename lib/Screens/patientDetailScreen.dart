@@ -13,14 +13,16 @@ class PatientDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(patient["name"]),
       ),
-			body: Column(
-				children: [
-					Text(patient["name"]),
-					Text(patient["address"]),
-					Text(patient["phone"]),
-					Text(patient["age"]),
-					Text(patient["gender"]),
-				],
+			body: Center(
+			  child: Column(
+			  	children: [
+			  		Text(patient["name"]),
+			  		Text(patient["address"]),
+			  		Text(patient["phone"]),
+			  		Text(patient["age"]),
+			  		Text(patient["gender"]),
+			  	],
+			  ),
 			),
     );
   }
