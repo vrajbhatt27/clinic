@@ -2,7 +2,8 @@ import 'package:clinic/Providers/patients.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Widgets/searchPatient.dart';
-import './newPatientScreen.dart';
+// import './newPatientScreen.dart';
+import '../Widgets/patientFormNew.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -24,7 +25,27 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("Deep Clinic"),
         actions: [SearchPatient()],
       ),
-      body: NewPatient(),
+      body: Column(
+        children: [
+          Text(
+            "New Patient",
+            style: TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Divider(
+            thickness: 1,
+            color: Colors.black,
+            indent: 15,
+            endIndent: 15,
+          ),
+          // NewPatientForm(),
+          Expanded(
+            child: NewPatientForm(),
+          ),
+        ],
+      ),
       // SearchPatient(),
     );
   }
