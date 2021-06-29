@@ -360,7 +360,21 @@ class _NewPatientFormState extends State<NewPatientForm> {
         ),
       ),
     );
-  }
+  
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
 }
 
 // final isValid = _form.currentState?.validate();
