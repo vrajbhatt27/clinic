@@ -13,11 +13,23 @@ class PatientRecordsCard extends StatefulWidget {
 
 class _PatientRecordsCardState extends State<PatientRecordsCard> {
   var showDetails = false;
+  List history;
+  List symptoms;
+  List medicines;
 
-  Widget disp(String text) {
+  @override
+  initState() {
+    super.initState();
+  }
+
+  Widget disp(String text, {bool underline = false}) {
     return Text(
       text,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        decoration: underline ? TextDecoration.underline : null,
+      ),
       softWrap: true,
     );
   }
@@ -30,6 +42,29 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
           disp(t1),
           SizedBox(width: 10),
           disp(t2),
+        ],
+      ),
+    );
+  }
+
+  Widget infoInList(List lst, String title) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          disp(title, underline: true),
+          SizedBox(
+            height: 5,
+          ),
+          ...lst
+              .map(
+                (e) => Text(
+                  e,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              )
+              .toList(),
         ],
       ),
     );
@@ -60,6 +95,11 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
                     size: 35,
                   ),
                   onPressed: () {
+                    history = widget.details["history"].toString().split("\n");
+                    symptoms =
+                        widget.details["symptoms"].toString().split("\n");
+                    medicines =
+                        widget.details["medicines"].toString().split("\n");
                     setState(() {
                       showDetails = !showDetails;
                     });
@@ -70,6 +110,7 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
             if (showDetails)
               Container(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,13 +119,27 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
                         generalInfo("Pulse", widget.details["pulse"]),
                       ],
                     ),
-                    Text('Past History: ${widget.details["history"]}'),
-                    Text('Symptoms: ${widget.details["symptoms"]}'),
-                    Text('Medicines: ${widget.details["medicines"]}'),
+                    IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          infoInList(history, "Medical History"),
+                          VerticalDivider(
+                            thickness: 1,
+                            color: Colors.black,
+                            width: 10,
+                            indent: 15,
+                            endIndent: 10,
+                          ),
+                          infoInList(symptoms, "Symptoms"),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 5),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        infoInList(medicines, "Medicines"),
                         disp('Amount: ${widget.details["amount"]} Rs'),
                       ],
                     ),
