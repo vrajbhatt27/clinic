@@ -22,26 +22,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       var lst = DateTime.parse(e).toString().split(" ");
       var date = lst[0];
       var time = lst[1].split(".")[0].substring(0, 5);
-      return Card(
-        elevation: 5,
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Date: $date"),
-              Text("Time: $time"),
-              Text('BP: ${details["bp"]}'),
-              Text('Pulse: ${details["pulse"]}'),
-              Text('Past History: ${details["history"]}'),
-              Text('Symptoms: ${details["symptoms"]}'),
-              Text('Medicines: ${details["medicines"]}'),
-              Text('Amount: ${details["amount"]}'),
-            ],
-          ),
-        ),
-      );
+      return PatientRecordsCard(details, date, time);
     }).toList();
   }
 
@@ -71,10 +52,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   Widget disp(String text) {
     return Text(
       text,
-      style: TextStyle(
-        fontSize: 20,
-				fontWeight: FontWeight.bold
-      ),
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       softWrap: true,
     );
   }
@@ -113,11 +91,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
-							shadowColor: Color(0xFF330000),
+              shadowColor: Color(0xFF330000),
               child: Container(
                 padding: EdgeInsets.all(10),
                 child: Column(
-									crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     generalInfo("Name: ", "${patient["name"]}"),
                     generalInfo("Phone: ", "${patient["phone"]}"),
@@ -131,40 +109,136 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                         generalInfo("Age: ", "${patient["age"]}"),
                       ],
                     ),
-                    if(patient["address"].toString().length > 13)
-										Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8.0, bottom: 3, left: 8, right: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          disp("Address:"),
-                          disp(patient["address"]),
-                        ],
-                      ),
-                    )
-										else
-										generalInfo("Address", patient["address"]),
+                    if (patient["address"].toString().length > 13)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8.0, bottom: 3, left: 8, right: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            disp("Address:"),
+                            disp(patient["address"]),
+                          ],
+                        ),
+                      )
+                    else
+                      generalInfo("Address", patient["address"]),
                   ],
                 ),
               ),
             ),
-
-            // disp('Name: ${patient["name"]}'),
-            // Text('Address: ${patient["address"]}'),
-            // Text('Phone: ${patient["phone"]}'),
-            // Text('Age: ${patient["age"]}'),
-            // Text('Sex: ${patient["gender"]}'),
             Divider(
               thickness: 1,
             ),
-            ...previousRecord()
+            ...previousRecord(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: openForm,
+      ),
+    );
+  }
+}
+
+class PatientRecordsCard extends StatefulWidget {
+  final details;
+  final date;
+  final time;
+
+  PatientRecordsCard(this.details, this.date, this.time);
+
+  @override
+  _PatientRecordsCardState createState() => _PatientRecordsCardState();
+}
+
+class _PatientRecordsCardState extends State<PatientRecordsCard> {
+  var details;
+  var date;
+  var time;
+  var showDetails = false;
+  @override
+  void initState() {
+    super.initState();
+    details = widget.details;
+    date = widget.date;
+    time = widget.time;
+  }
+
+  Widget disp(String text) {
+    return Text(
+      text,
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      softWrap: true,
+    );
+  }
+
+  Widget generalInfo(String t1, String t2) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, bottom: 3, left: 8, right: 5),
+      child: Row(
+        children: [
+          disp(t1),
+          SizedBox(width: 10),
+          disp(t2),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                generalInfo("Date:", "$date ($time)"),
+                IconButton(
+                  icon: Icon(
+                    showDetails
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_left,
+                    size: 35,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      showDetails = !showDetails;
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (showDetails)
+              Container(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        generalInfo("BP:", details["bp"]),
+                        generalInfo("Pulse", details["pulse"]),
+                      ],
+                    ),
+                    Text('Past History: ${details["history"]}'),
+                    Text('Symptoms: ${details["symptoms"]}'),
+                    Text('Medicines: ${details["medicines"]}'),
+                    Text('Amount: ${details["amount"]}'),
+                  ],
+                ),
+              )
+          ],
+        ),
       ),
     );
   }
