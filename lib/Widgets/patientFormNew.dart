@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import '../Screens/home.dart';
+import '../Providers/patients.dart';
 
 class NewPatientForm extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
   final _pulseFocusNode = FocusNode();
   final _historyFocusNode = FocusNode();
   var _gender = ["Male", "Female", "Other"];
-  Map<String, dynamic> data = {
+  Map<String, dynamic> tempData = {
     "name": "",
     "address": "",
     "phone": "",
@@ -84,28 +85,37 @@ class _NewPatientFormState extends State<NewPatientForm> {
   }
 
   void _saveForm() async {
-    // final isValid = _form.currentState?.validate();
-    // if (isValid != null && isValid == false) {
-    //   return;
-    // }
-    _form.currentState.save();
-    data["name"] = _nameCtrl.text;
-    data["address"] = _addressCtrl.text;
-    data["phone"] = _phoneCtrl.text;
-    data["age"] = _ageCtrl.text;
-    data["bp"] = _bpCtrl.text;
-    data["pulse"] = _pulseCtrl.text;
-    data["history"] = _historyCtrl.text;
-    data["symptoms"] = _symptomsCtrl.text;
-    data["medicines"] = _medicinesCtrl.text;
-    data["amount"] = _amountCtrl.text;
-    data["id"] = data["name"] + DateTime.now().toIso8601String();
+    Map data = {};
 
-    var box = await Hive.openBox("patients");
-    // box.clear();
-    box.add(data);
-    print("--------------------");
-    print(box.toMap());
+    _form.currentState.save();
+    tempData["name"] = _nameCtrl.text;
+    tempData["address"] = _addressCtrl.text;
+    tempData["phone"] = _phoneCtrl.text;
+    tempData["age"] = _ageCtrl.text;
+    tempData["bp"] = _bpCtrl.text;
+    tempData["pulse"] = _pulseCtrl.text;
+    tempData["history"] = _historyCtrl.text;
+    tempData["symptoms"] = _symptomsCtrl.text;
+    tempData["medicines"] = _medicinesCtrl.text;
+    tempData["amount"] = _amountCtrl.text;
+    tempData["id"] = tempData["name"] + DateTime.now().toIso8601String();
+
+    data["name"] = tempData["name"];
+    data["address"] = tempData["address"];
+    data["phone"] = tempData["phone"];
+    data["gender"] = tempData["gender"];
+    data["age"] = tempData["age"];
+    data["id"] = tempData["id"];
+    data[DateTime.now().toIso8601String()] = {
+      "bp": tempData["bp"],
+      "pulse": tempData["pulse"],
+      "history": tempData["history"],
+      "symptoms": tempData["symptoms"],
+      "medicines": tempData["medicines"],
+      "amount": tempData["amount"],
+    };
+
+    Provider.of<Patients>(context, listen: false).addData(data);
 
     showDialogBox();
   }
@@ -153,7 +163,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                 focusNode: _addressFocusNode,
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) => data["address"] = value,
+                onSaved: (value) => tempData["address"] = value,
               ),
               SizedBox(height: 10),
               TextFormField(
@@ -167,7 +177,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                 ),
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                onSaved: (value) => data["phone"] = value,
+                onSaved: (value) => tempData["phone"] = value,
               ),
               SizedBox(height: 10),
               GestureDetector(
@@ -194,7 +204,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                                 onChanged: (val) {
                                   setState(() {
                                     _currentSelectedValue = val;
-                                    data["gender"] = val;
+                                    tempData["gender"] = val;
                                   });
                                   state.didChange(val);
                                 },
@@ -222,7 +232,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                           ),
                         ),
                         keyboardType: TextInputType.number,
-                        onSaved: (value) => data["age"] = value,
+                        onSaved: (value) => tempData["age"] = value,
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_bpFocusNode);
                         },
@@ -245,7 +255,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                         ),
                       ),
                       keyboardType: TextInputType.number,
-                      onSaved: (value) => data["bp"] = value,
+                      onSaved: (value) => tempData["bp"] = value,
                       focusNode: _bpFocusNode,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_pulseFocusNode);
@@ -264,7 +274,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                         ),
                       ),
                       keyboardType: TextInputType.number,
-                      onSaved: (value) => data["pulse"] = value,
+                      onSaved: (value) => tempData["pulse"] = value,
                       focusNode: _pulseFocusNode,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_historyFocusNode);
@@ -286,7 +296,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                 focusNode: _historyFocusNode,
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) => data["history"] = value,
+                onSaved: (value) => tempData["history"] = value,
               ),
               SizedBox(height: 10),
               TextFormField(
@@ -300,7 +310,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                 ),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) => data["symptoms"] = value,
+                onSaved: (value) => tempData["symptoms"] = value,
               ),
               SizedBox(height: 10),
               TextFormField(
@@ -314,7 +324,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                 ),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) => data["medicines"] = value,
+                onSaved: (value) => tempData["medicines"] = value,
               ),
               SizedBox(height: 10),
               Row(
@@ -333,7 +343,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
                         ),
                       ),
                       keyboardType: TextInputType.number,
-                      onSaved: (value) => data["amount"] = value,
+                      onSaved: (value) => tempData["amount"] = value,
                     ),
                   ),
                   Container(
@@ -352,3 +362,8 @@ class _NewPatientFormState extends State<NewPatientForm> {
     );
   }
 }
+
+// final isValid = _form.currentState?.validate();
+    // if (isValid != null && isValid == false) {
+    //   return;
+    // }

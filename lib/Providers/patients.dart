@@ -14,4 +14,29 @@ class Patients with ChangeNotifier {
     print(_data);
     notifyListeners();
   }
+
+  addData(data) async {
+    var box = await Hive.openBox("patients");
+    // box.clear();
+    box.put(data["id"], data);
+    _data = box.values.toList();
+    print("--------------------");
+    print(box.toMap());
+  }
+
+  findById(id) async {
+    var box = await Hive.openBox("patients");
+    if (box.containsKey(id)) {
+      return box.get(id);
+    }
+
+    return null;
+  }
+
+  addToExistingPatient(data) async {
+    var box = await Hive.openBox("patients");
+    box.put(data["id"], data);
+    print("*************");
+    print(box.toMap());
+  }
 }
