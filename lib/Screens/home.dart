@@ -20,13 +20,11 @@ class _MyHomePageState extends State<MyHomePage> {
     Provider.of<Patients>(context, listen: false).fetchAndSetData();
 
     _controller.addListener(() {
-      if (_controller.position.atEdge) {
-        if (_controller.position.pixels > 0) {
-          if (_isVisible) {
-            setState(() {
-              _isVisible = false;
-            });
-          }
+      if ((_controller.offset > _controller.position.maxScrollExtent - 100)) {
+        if (_isVisible) {
+          setState(() {
+            _isVisible = false;
+          });
         }
       } else {
         if (!_isVisible) {
@@ -184,6 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 key: _form,
                 child: Container(
                   child: ListView(
+                    controller: _controller,
                     children: [
                       TextFormField(
                         controller: _nameCtrl,
@@ -428,12 +427,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      // floatingActionButton: Visibility(
-      //   visible: _isVisible,
-      //   child: FloatingActionButton(
-      //     onPressed: () {},
-      //   ),
-      // ),
+      floatingActionButton: Visibility(
+        visible: _isVisible,
+        child: FloatingActionButton(
+          onPressed: () {},
+          child: SearchPatient(),
+        ),
+      ),
     );
   }
 }
