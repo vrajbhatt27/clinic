@@ -122,7 +122,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                         ),
                       )
                     else
-                      generalInfo("Address", patient["address"]),
+                      generalInfo("Address:", patient["address"]),
                   ],
                 ),
               ),
@@ -154,17 +154,7 @@ class PatientRecordsCard extends StatefulWidget {
 }
 
 class _PatientRecordsCardState extends State<PatientRecordsCard> {
-  var details;
-  var date;
-  var time;
   var showDetails = false;
-  @override
-  void initState() {
-    super.initState();
-    details = widget.details;
-    date = widget.date;
-    time = widget.time;
-  }
 
   Widget disp(String text) {
     return Text(
@@ -203,7 +193,7 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                generalInfo("Date:", "$date ($time)"),
+                generalInfo("Date:", "${widget.date} (${widget.time})"),
                 IconButton(
                   icon: Icon(
                     showDetails
@@ -226,14 +216,14 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        generalInfo("BP:", details["bp"]),
-                        generalInfo("Pulse", details["pulse"]),
+                        generalInfo("BP:", widget.details["bp"]),
+                        generalInfo("Pulse", widget.details["pulse"]),
                       ],
                     ),
-                    Text('Past History: ${details["history"]}'),
-                    Text('Symptoms: ${details["symptoms"]}'),
-                    Text('Medicines: ${details["medicines"]}'),
-                    Text('Amount: ${details["amount"]}'),
+                    Text('Past History: ${widget.details["history"]}'),
+                    Text('Symptoms: ${widget.details["symptoms"]}'),
+                    Text('Medicines: ${widget.details["medicines"]}'),
+                    Text('Amount: ${widget.details["amount"]}'),
                   ],
                 ),
               )
