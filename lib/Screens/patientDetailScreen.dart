@@ -1,10 +1,11 @@
-import 'package:clinic/Models/patient.dart';
+import 'package:clinic/Providers/patients.dart';
 import 'package:clinic/Widgets/medicalForm.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PatientDetailScreen extends StatefulWidget {
-  final Map patient;
-  PatientDetailScreen(this.patient);
+  final patientId;
+  PatientDetailScreen(this.patientId);
 
   @override
   _PatientDetailScreenState createState() => _PatientDetailScreenState();
@@ -13,19 +14,16 @@ class PatientDetailScreen extends StatefulWidget {
 class _PatientDetailScreenState extends State<PatientDetailScreen> {
   List keys;
   var height;
+  Map patient;
 
   @override
   void initState() {
     super.initState();
-    keys = widget.patient.keys.toList();
-    keys.removeWhere(
-        (element) => int.tryParse(element.substring(0, 1)) == null);
-    keys = keys.reversed.toList();
   }
 
   List<Widget> previousRecord() {
     return keys.map((e) {
-      var details = widget.patient[e];
+      var details = patient[e];
       var lst = DateTime.parse(e).toString().split(" ");
       var date = lst[0];
       var time = lst[1].split(".")[0].substring(0, 5);
@@ -68,7 +66,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
         return GestureDetector(
           onTap: () {},
           child: Container(
-              height: height * 0.8, child: MedicalForm(widget.patient["id"])),
+              height: height * 0.8, child: MedicalForm(patient["id"])),
           behavior: HitTestBehavior.opaque,
         );
       },
@@ -78,18 +76,23 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    patient = Provider.of<Patients>(context).findById(widget.patientId);
+		keys = patient.keys.toList();
+    keys.removeWhere(
+        (element) => int.tryParse(element.substring(0, 1)) == null);
+    keys = keys.reversed.toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.patient["name"]),
+        title: Text(patient["name"]),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text('Name: ${widget.patient["name"]}'),
-            Text('Address: ${widget.patient["address"]}'),
-            Text('Phone: ${widget.patient["phone"]}'),
-            Text('Age: ${widget.patient["age"]}'),
-            Text('Sex: ${widget.patient["gender"]}'),
+            Text('Name: ${patient["name"]}'),
+            Text('Address: ${patient["address"]}'),
+            Text('Phone: ${patient["phone"]}'),
+            Text('Age: ${patient["age"]}'),
+            Text('Sex: ${patient["gender"]}'),
             Divider(
               thickness: 1,
             ),

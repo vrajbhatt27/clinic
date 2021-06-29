@@ -62,7 +62,7 @@ class CustomDelegate<T> extends SearchDelegate<T> {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => PatientDetailScreen(listToShow[i]),
+                builder: (ctx) => PatientDetailScreen(listToShow[i]["id"]),
               ),
             );
           },

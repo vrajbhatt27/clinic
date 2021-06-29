@@ -43,7 +43,7 @@ class _MedicalFormState extends State<MedicalForm> {
       "amount": _amountCtrl.text,
     };
 
-    var patientData = await Provider.of<Patients>(context, listen: false)
+    var patientData = Provider.of<Patients>(context, listen: false)
         .findById(widget.patientId);
 
     patientData[DateTime.now().toIso8601String()] = currentData;
@@ -52,7 +52,8 @@ class _MedicalFormState extends State<MedicalForm> {
 
     Provider.of<Patients>(context, listen: false)
         .addToExistingPatient(patientData);
-    // showDialogBox();
+
+    Navigator.of(context).pop();
   }
 
   @override
