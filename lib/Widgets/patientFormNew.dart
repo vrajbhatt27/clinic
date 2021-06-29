@@ -14,7 +14,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
   final _bpFocusNode = FocusNode();
   final _pulseFocusNode = FocusNode();
   final _historyFocusNode = FocusNode();
-  var _gender = ["Male", "Female", "Other"];
+  var _gender = ["Sex", "Male", "Female", "Other"];
   Map<String, dynamic> tempData = {
     "name": "",
     "address": "",
@@ -29,7 +29,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
     "amount": "",
     "id": "",
   };
-  var _currentSelectedValue;
+  var _currentSelectedValue = "Sex";
 
   var _nameCtrl = TextEditingController();
   var _addressCtrl = TextEditingController();
@@ -287,7 +287,7 @@ class _NewPatientFormState extends State<NewPatientForm> {
               TextFormField(
                 controller: _historyCtrl,
                 decoration: InputDecoration(
-                  labelText: "Past History",
+                  labelText: "Medical History",
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
                     borderRadius: BorderRadius.all(Radius.circular(10)),

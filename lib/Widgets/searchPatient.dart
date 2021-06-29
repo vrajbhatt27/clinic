@@ -12,7 +12,10 @@ class _SearchPatientState extends State<SearchPatient> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.search),
+      icon: Icon(
+        Icons.search,
+        size: 30,
+      ),
       onPressed: () {
         final data = Provider.of<Patients>(context, listen: false).data;
         print("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");

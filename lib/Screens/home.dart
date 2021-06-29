@@ -10,19 +10,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var _controller = ScrollController();
+  var _isVisible = true;
+
   @override
   void initState() {
     super.initState();
     print("Here");
     Provider.of<Patients>(context, listen: false).fetchAndSetData();
+
+    _controller.addListener(() {
+      if (_controller.position.atEdge) {
+        if (_controller.position.pixels > 0) {
+          if (_isVisible) {
+            setState(() {
+              _isVisible = false;
+            });
+          }
+        }
+      } else {
+        if (!_isVisible) {
+          setState(() {
+            _isVisible = true;
+          });
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Deep Clinic"),
-        actions: [SearchPatient()],
+        title: Text(
+          "Deep Clinic",
+          style: TextStyle(fontSize: 25),
+        ),
+        actions: [
+          SearchPatient(),
+        ],
       ),
       body: Column(
         children: [
@@ -35,9 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Divider(
             thickness: 1,
-            color: Colors.black,
-            indent: 15,
-            endIndent: 15,
+            color: Colors.black54,
+            indent: 25,
+            endIndent: 25,
           ),
           // NewPatientForm(),
           Expanded(
@@ -46,6 +72,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       // SearchPatient(),
+      // floatingActionButton: Visibility(
+      //   visible: _isVisible,
+      //   child: FloatingActionButton(
+      //     onPressed: () {},
+      //   ),
+      // ),
     );
   }
 }
