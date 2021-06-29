@@ -62,6 +62,7 @@ class CustomDelegate<T> extends SearchDelegate<T> {
       itemBuilder: (_, i) {
         return ListTile(
           title: Text(listToShow[i]["name"]),
+					subtitle: Text(listToShow[i]["address"]),
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
