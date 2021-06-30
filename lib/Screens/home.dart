@@ -170,6 +170,27 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontSize: 25),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () async {
+              var res = await Provider.of<Patients>(context, listen: false)
+                  .getDataFromStorage();
+
+              if (res) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Data Imported Successfully"),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Can't Import Data"),
+                  ),
+                );
+              }
+            },
+          ),
           SearchPatient(),
         ],
       ),
