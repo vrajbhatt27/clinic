@@ -48,6 +48,7 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
   }
 
   Widget infoInList(List lst, String title) {
+    var i = 0;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -57,14 +58,13 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
           SizedBox(
             height: 5,
           ),
-          ...lst
-              .map(
-                (e) => Text(
-                  e,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-              )
-              .toList(),
+          ...lst.map((e) {
+            i++;
+            return Text(
+              "$i)  $e",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            );
+          }).toList(),
         ],
       ),
     );
