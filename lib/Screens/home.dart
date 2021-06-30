@@ -115,31 +115,27 @@ class _MyHomePageState extends State<MyHomePage> {
     Map data = {};
 
     _form.currentState.save();
-    tempData["name"] = _nameCtrl.text;
-    tempData["address"] = _addressCtrl.text;
-    tempData["phone"] = _phoneCtrl.text;
-    tempData["age"] = _ageCtrl.text;
-    tempData["bp"] = _bpCtrl.text;
-    tempData["pulse"] = _pulseCtrl.text;
-    tempData["history"] = _historyCtrl.text;
-    tempData["symptoms"] = _symptomsCtrl.text;
-    tempData["medicines"] = _medicinesCtrl.text;
-    tempData["amount"] = _amountCtrl.text;
-    tempData["id"] = tempData["name"] + DateTime.now().toIso8601String();
 
-    data["name"] = tempData["name"];
-    data["address"] = tempData["address"];
-    data["phone"] = tempData["phone"];
+    var lst = _nameCtrl.text.split(" ");
+
+    for (var i = 0; i < lst.length; i++) {
+			lst[i] = lst[i].substring(0, 1).toUpperCase() + lst[i].substring(1);
+		}
+
+    data["name"] = lst.join(" ");
+    print(data["name"]);
+    data["address"] = _addressCtrl.text;
+    data["phone"] = _phoneCtrl.text;
     data["gender"] = tempData["gender"];
-    data["age"] = tempData["age"];
-    data["id"] = tempData["id"];
+    data["age"] = _ageCtrl.text;
+    data["id"] = data["name"] + DateTime.now().toIso8601String();
     data[DateTime.now().toIso8601String()] = {
-      "bp": tempData["bp"],
-      "pulse": tempData["pulse"],
-      "history": tempData["history"],
-      "symptoms": tempData["symptoms"],
-      "medicines": tempData["medicines"],
-      "amount": tempData["amount"],
+      "bp": _bpCtrl.text,
+      "pulse": _pulseCtrl.text,
+      "history": _historyCtrl.text,
+      "symptoms": _symptomsCtrl.text,
+      "medicines": _medicinesCtrl.text,
+      "amount": _amountCtrl.text,
     };
 
     Provider.of<Patients>(context, listen: false).addData(data);

@@ -11,7 +11,7 @@ class Patients with ChangeNotifier {
   void fetchAndSetData() async {
     var box = await Hive.openBox("patients");
     _data = box.values.toList();
-    print(_data);
+    // print(_data);
     notifyListeners();
   }
 
