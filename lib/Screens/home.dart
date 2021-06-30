@@ -37,7 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final _form = GlobalKey<FormState>();
+  final _nameFocusNode = FocusNode();
   final _addressFocusNode = FocusNode();
+  final _phoneFocusNode = FocusNode();
+  final _genderFocusNode = FocusNode();
+  final _ageFocusNode = FocusNode();
   final _bpFocusNode = FocusNode();
   final _pulseFocusNode = FocusNode();
   final _historyFocusNode = FocusNode();
@@ -57,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "id": "",
   };
   var _currentSelectedValue = "Sex";
+  var _genderSelected = true;
 
   var _nameCtrl = TextEditingController();
   var _addressCtrl = TextEditingController();
@@ -112,6 +117,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _saveForm() async {
+    var validate = _form.currentState.validate();
+    if (tempData["gender"] == "" || tempData["gender"] == "Sex") {
+      validate = false;
+      _genderSelected = false;
+      print("gender not selected");
+      FocusScope.of(context).requestFocus(_genderFocusNode);
+      setState(() {});
+    }
+    if (!validate) {
+      FocusScope.of(context).requestFocus();
+      return;
+    }
+
     Map data = {};
 
     _form.currentState.save();
@@ -119,8 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
     var lst = _nameCtrl.text.split(" ");
 
     for (var i = 0; i < lst.length; i++) {
-			lst[i] = lst[i].substring(0, 1).toUpperCase() + lst[i].substring(1);
-		}
+      lst[i] = lst[i].substring(0, 1).toUpperCase() + lst[i].substring(1);
+    }
 
     data["name"] = lst.join(" ");
     print(data["name"]);
@@ -182,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       TextFormField(
                         controller: _nameCtrl,
+                        focusNode: _nameFocusNode,
                         decoration: InputDecoration(
                           labelText: "Name",
                           border: OutlineInputBorder(
@@ -194,13 +213,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           FocusScope.of(context)
                               .requestFocus(_addressFocusNode);
                         },
-                        // validator: (value) {
-                        //   if (value != null && value.isEmpty) {
-                        //     return "Please enter a name";
-                        //   }
-                        //   return null;
-                        // },
-                        // onSaved: (value) => data["name"] = value,
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            FocusScope.of(context).requestFocus(_nameFocusNode);
+                            return "Please enter a name";
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 10),
                       TextFormField(
@@ -216,10 +235,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         maxLines: 3,
                         keyboardType: TextInputType.multiline,
                         onSaved: (value) => tempData["address"] = value,
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            FocusScope.of(context)
+                                .requestFocus(_addressFocusNode);
+                            return "Please enter a address";
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 10),
                       TextFormField(
                         controller: _phoneCtrl,
+                        focusNode: _phoneFocusNode,
                         decoration: InputDecoration(
                           labelText: "Phone",
                           border: OutlineInputBorder(
@@ -229,6 +257,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         keyboardType: TextInputType.phone,
                         maxLength: 10,
+                        validator: (value) {
+                          print("\n\n*********************\n$value !!!");
+                          if (value != null && value.isEmpty) {
+                            print("here--");
+                            return "Please enter a phone number";
+                          }
+                          return null;
+                        },
                         onSaved: (value) => tempData["phone"] = value,
                       ),
                       SizedBox(height: 10),
@@ -240,43 +276,57 @@ class _MyHomePageState extends State<MyHomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: FormField<String>(
-                                builder: (FormFieldState<String> state) {
-                                  return InputDecorator(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                              child: Container(
+                                decoration: _genderSelected
+                                    ? null
+                                    : BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: Colors.red, width: 2),
                                       ),
-                                    ),
-                                    isEmpty: _currentSelectedValue == '',
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        value: _currentSelectedValue,
-                                        isDense: true,
-                                        onChanged: (val) {
-                                          setState(() {
-                                            _currentSelectedValue = val;
-                                            tempData["gender"] = val;
-                                          });
-                                          state.didChange(val);
-                                        },
-                                        items: _gender.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
+                                child: FormField<String>(
+                                  builder: (FormFieldState<String> state) {
+                                    return InputDecorator(
+                                      decoration: InputDecoration(
+                                        // _genderSelected ? null : Colors.red,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                      isEmpty: _currentSelectedValue == '',
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          focusNode: _genderFocusNode,
+                                          value: _currentSelectedValue,
+                                          isDense: true,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _currentSelectedValue = val;
+                                              tempData["gender"] = val;
+                                            });
+                                            state.didChange(val);
+                                          },
+                                          items: _gender.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                             SizedBox(width: 5),
                             Expanded(
                               child: TextFormField(
                                 controller: _ageCtrl,
+                                focusNode: _ageFocusNode,
                                 decoration: InputDecoration(
                                   labelText: "Age",
                                   border: OutlineInputBorder(
@@ -290,6 +340,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onFieldSubmitted: (_) {
                                   FocusScope.of(context)
                                       .requestFocus(_bpFocusNode);
+                                },
+                                validator: (value) {
+                                  if (value != null && value.isEmpty) {
+                                    FocusScope.of(context)
+                                        .requestFocus(_ageFocusNode);
+                                    return "Please enter age";
+                                  }
+                                  return null;
                                 },
                               ),
                             ),
