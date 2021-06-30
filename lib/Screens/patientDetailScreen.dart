@@ -3,6 +3,7 @@ import 'package:clinic/Widgets/medicalForm.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Widgets/recordCard.dart';
+import '../Screens/home.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final patientId;
@@ -25,6 +26,37 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       var time = lst[1].split(".")[0].substring(0, 5);
       return PatientRecordsCard(details, date, time);
     }).toList();
+  }
+
+  showDialogBox() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Message"),
+        content: Text("Are you sure you want to delete the patient details ?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text("No"),
+          ),
+          TextButton(
+            onPressed: () {
+              Provider.of<Patients>(context, listen: false)
+                  .deletePatient(widget.patientId);
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ),
+                  (route) => false);
+            },
+            child: Text("Yes"),
+          ),
+        ],
+      ),
+    );
   }
 
   openForm() {
@@ -71,17 +103,34 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     patient = Provider.of<Patients>(context).findById(widget.patientId);
-    keys = patient.keys.toList();
-    keys.removeWhere(
-        (element) => int.tryParse(element.substring(0, 1)) == null);
-    keys = keys.reversed.toList();
-    return Scaffold(
+    if (patient != null) {
+      keys = patient.keys.toList();
+      keys.removeWhere(
+          (element) => int.tryParse(element.substring(0, 1)) == null);
+      keys = keys.reversed.toList();
+    }
+    return patient != null ? Scaffold(
       appBar: AppBar(
-        title: Text(patient["name"]),
+        title: Text(
+          patient["name"],
+          style: TextStyle(
+            fontSize: 25,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.delete_outline,
+              size: 30,
+            ),
+            onPressed: showDialogBox,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -139,6 +188,6 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
         child: Icon(Icons.add),
         onPressed: openForm,
       ),
-    );
+    ) : Container();
   }
 }

@@ -11,7 +11,7 @@ class Patients with ChangeNotifier {
   void fetchAndSetData() async {
     var box = await Hive.openBox("patients");
     _data = box.values.toList();
-    // print(_data);
+    print(_data);
     notifyListeners();
   }
 
@@ -41,5 +41,12 @@ class Patients with ChangeNotifier {
     print("*************");
     print(box.toMap());
     notifyListeners();
+  }
+
+  deletePatient(id) async {
+    var box = await Hive.openBox("patients");
+    await box.delete(id);
+    _data = box.values.toList();
+    print("Deleted");
   }
 }
