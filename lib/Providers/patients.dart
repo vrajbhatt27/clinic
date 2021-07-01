@@ -24,16 +24,17 @@ class Patients with ChangeNotifier {
     return box.get(date);
   }
 
-  void fetchAndSetData() async {
+  Future<void> fetchAndSetData() async {
     var box = await Hive.openBox("patients");
     _data = box.values.toList();
     // print(_data);
     notifyListeners();
   }
 
-  void fetchAndSetDates() async {
+  Future<void> fetchAndSetDates() async {
     var box = await Hive.openBox("Dates");
     var x = box.toMap();
+    _dates.clear();
     x.forEach((key, value) {
       _dates.add({key: value});
     });
@@ -68,12 +69,19 @@ class Patients with ChangeNotifier {
     }
     box.put(key, date);
     // box.clear();
-    _dates = box.values.toList();
-    print("--------------------");
-    print(box.toMap());
-    // await saveFile();
-    // print("~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    // print("File saved");
+    var x = box.toMap();
+    _dates.clear();
+    x.forEach((key, value) {
+      // print(key);
+      // print(value);
+      _dates.add({key: value});
+    });
+    notifyListeners();
+    print("--------------------@@@@@@");
+    print(_dates);
+    await saveDatesFile();
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    print("File saved");
   }
 
   findById(id) {
@@ -157,6 +165,54 @@ class Patients with ChangeNotifier {
     return false;
   }
 
+  Future<bool> saveDatesFile() async {
+    Directory directory;
+    try {
+      if (Platform.isAndroid) {
+        if (await _requestPermission(Permission.storage)) {
+          directory = await getExternalStorageDirectory();
+          // /storage/emulated/0/Android/data/com.example.clinic/files
+          String newPath = "";
+          List<String> folders = directory.path.split("/");
+          for (var i = 1; i < folders.length; i++) {
+            var folder = folders[i];
+            if (folder != "Android") {
+              newPath += "/" + folder;
+            } else {
+              break;
+            }
+          }
+          newPath = newPath + "/clinicApp";
+          directory = Directory(newPath);
+          print(directory.path);
+        } else {
+          return false;
+        }
+      }
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
+      if (await directory.exists()) {
+        var box = await Hive.openBox("Dates");
+        var data = box.toMap();
+        File f = File(directory.path + "/dates.json");
+        if (await f.exists()) {
+          await f.writeAsString(jsonEncode(data));
+        } else {
+          await f.create();
+          await f.writeAsString(jsonEncode(data));
+        }
+        print("Done");
+        print(await f.readAsString());
+        return true;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
   Future<bool> getDataFromStorage() async {
     Directory directory;
     Map data;
@@ -201,6 +257,60 @@ class Patients with ChangeNotifier {
         _data = box.values.toList();
         print("Done");
         print(_data);
+        return true;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  Future<bool> datesFromStorage() async {
+    Directory directory;
+    Map data;
+    try {
+      if (Platform.isAndroid) {
+        if (await _requestPermission(Permission.storage)) {
+          directory = await getExternalStorageDirectory();
+          // /storage/emulated/0/Android/data/com.example.clinic/files
+          String newPath = "";
+          List<String> folders = directory.path.split("/");
+          for (var i = 1; i < folders.length; i++) {
+            var folder = folders[i];
+            if (folder != "Android") {
+              newPath += "/" + folder;
+            } else {
+              break;
+            }
+          }
+          newPath = newPath + "/clinicApp";
+          directory = Directory(newPath);
+          print(directory.path);
+        } else {
+          return false;
+        }
+      }
+      if (!await directory.exists()) {
+        return false;
+      }
+
+      if (await directory.exists()) {
+        File f = File(directory.path + "/dates.json");
+        if (await f.exists()) {
+          var dataFromStorage = await f.readAsString();
+          data = jsonDecode(dataFromStorage);
+        } else {
+          return false;
+        }
+        var box = await Hive.openBox("Dates");
+        data.forEach((key, value) {
+          box.put(key, value);
+        });
+        _dates.clear();
+        await fetchAndSetDates();
+        print("--------------------@@@@@@");
+        print("Done");
+        print(_dates);
         return true;
       }
     } catch (e) {

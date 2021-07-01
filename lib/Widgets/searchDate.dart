@@ -9,15 +9,34 @@ class SearchDate extends StatefulWidget {
 }
 
 class _SearchDateState extends State<SearchDate> {
+  var dates;
+  @override
+  void initState() {
+    super.initState();
+    dates = Provider.of<Patients>(context, listen: false).dates;
+    if (dates.isEmpty) {
+      print(")))))))))))))))))>>>>>>>>>>>>>>>>((((((((((((((((");
+      Provider.of<Patients>(context, listen: false)
+          .fetchAndSetDates()
+          .then((value) {
+        setState(() {});
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+		dates = Provider.of<Patients>(context, listen: false).dates;
     return IconButton(
       icon: Icon(
         Icons.calendar_today,
         size: 23,
       ),
-      onPressed: () {
-        final dates = Provider.of<Patients>(context, listen: false).dates;
+      onPressed: () async {
+        // var onlyDates = [];
+        // for (var i in dates) {
+        //   onlyDates.add(i.keys.toList()[0]);
+        // }
         print("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         print(dates);
         showSearch(
@@ -63,14 +82,11 @@ class CustomDelegate<T> extends SearchDelegate<T> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-					margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: ListTile(
             title: Text(
               date,
-              style: TextStyle(
-								fontSize: 24,
-								fontWeight: FontWeight.bold
-							),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             onTap: () async {
               var details = await Provider.of<Patients>(context, listen: false)
