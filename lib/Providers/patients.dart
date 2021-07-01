@@ -9,14 +9,31 @@ import 'dart:io';
 class Patients with ChangeNotifier {
   List<dynamic> _data = [];
 
+  List<dynamic> _dates = [];
+
   List<dynamic> get data {
     return [..._data];
+  }
+
+  List<dynamic> get dates {
+    return [..._dates];
   }
 
   void fetchAndSetData() async {
     var box = await Hive.openBox("patients");
     _data = box.values.toList();
     // print(_data);
+    notifyListeners();
+  }
+
+  void fetchAndSetDates() async {
+    var box = await Hive.openBox("Dates");
+    var x = box.toMap();
+    x.forEach((key, value) {
+      _dates.add({key: value});
+    });
+    print("This is dates...............>");
+    print(_dates);
     notifyListeners();
   }
 
@@ -31,6 +48,27 @@ class Patients with ChangeNotifier {
     await saveFile();
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~");
     print("File saved");
+  }
+
+  addDate(date) async {
+    var box = await Hive.openBox("Dates");
+    var key = date.keys.toList()[0];
+    if (box.containsKey(key)) {
+      var x = box.get(key);
+      x.add(date[key]);
+      date = x;
+    } else {
+      var x = [date[key]];
+      date = x;
+    }
+    box.put(key, date);
+    // box.clear();
+    _dates = box.values.toList();
+    print("--------------------");
+    print(box.toMap());
+    // await saveFile();
+    // print("~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    // print("File saved");
   }
 
   findById(id) {

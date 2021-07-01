@@ -48,7 +48,16 @@ class _MedicalFormState extends State<MedicalForm> {
 
     patientData[DateTime.now().toIso8601String()] = currentData;
 
-    print(patientData);
+    // print(patientData);
+
+    var date = {
+      DateTime.now().toString().split(" ").toList()[0]: {
+        "pid": widget.patientId,
+        "amount": (_amountCtrl.text == "") ? 0 : int.parse(_amountCtrl.text),
+      },
+    };
+
+    Provider.of<Patients>(context, listen: false).addDate(date);
 
     Provider.of<Patients>(context, listen: false)
         .addToExistingPatient(patientData);

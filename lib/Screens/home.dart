@@ -2,6 +2,7 @@ import 'package:clinic/Providers/patients.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Widgets/searchPatient.dart';
+import '../Widgets/searchDate.dart';
 // import '../Widgets/patientFormNew.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     print("Here");
     Provider.of<Patients>(context, listen: false).fetchAndSetData();
+    Provider.of<Patients>(context, listen: false).fetchAndSetDates();
 
     _controller.addListener(() {
       if ((_controller.offset > _controller.position.maxScrollExtent - 100)) {
@@ -141,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     data["name"] = lst.join(" ");
-    print(data["name"]);
     data["address"] = _addressCtrl.text;
     data["phone"] = _phoneCtrl.text;
     data["gender"] = tempData["gender"];
@@ -156,7 +157,15 @@ class _MyHomePageState extends State<MyHomePage> {
       "amount": _amountCtrl.text,
     };
 
+    var date = {
+      DateTime.now().toString().split(" ").toList()[0]: {
+        "pid": data["id"],
+        "amount": (_amountCtrl.text == "") ? 0 : int.parse(_amountCtrl.text),
+      },
+    };
+
     Provider.of<Patients>(context, listen: false).addData(data);
+    Provider.of<Patients>(context, listen: false).addDate(date);
 
     showDialogBox();
   }
@@ -170,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontSize: 25),
         ),
         actions: [
+					SearchDate(),
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
@@ -279,7 +289,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         keyboardType: TextInputType.phone,
                         maxLength: 10,
                         validator: (value) {
-                          print("\n\n*********************\n$value !!!");
                           if (value != null && value.isEmpty) {
                             print("here--");
                             return "Please enter a phone number";
