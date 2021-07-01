@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Providers/patients.dart';
+import '../Screens/dateDetails.dart';
 
 class SearchDate extends StatefulWidget {
   @override
@@ -56,8 +57,31 @@ class CustomDelegate<T> extends SearchDelegate<T> {
     return ListView.builder(
       itemCount: listToShow.length,
       itemBuilder: (_, i) {
-        return ListTile(
-          title: Text(listToShow[i].keys.toList()[0]),
+        var date = listToShow[i].keys.toList()[0];
+        return Card(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+					margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: ListTile(
+            title: Text(
+              date,
+              style: TextStyle(
+								fontSize: 24,
+								fontWeight: FontWeight.bold
+							),
+            ),
+            onTap: () async {
+              var details = await Provider.of<Patients>(context, listen: false)
+                  .findDate(date);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => DateDetail(details, date),
+                ),
+              );
+            },
+          ),
         );
       },
     );

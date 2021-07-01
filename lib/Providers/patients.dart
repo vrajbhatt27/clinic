@@ -19,6 +19,11 @@ class Patients with ChangeNotifier {
     return [..._dates];
   }
 
+  Future<List> findDate(date) async {
+    var box = await Hive.openBox("Dates");
+    return box.get(date);
+  }
+
   void fetchAndSetData() async {
     var box = await Hive.openBox("patients");
     _data = box.values.toList();
