@@ -50,10 +50,19 @@ class _MedicalFormState extends State<MedicalForm> {
 
     // print(patientData);
 
+    // var date = {
+    //   DateTime.now().toString().split(" ").toList()[0]: {
+    //     "pid": widget.patientId,
+    //     "amount": (_amountCtrl.text == "") ? 0 : int.parse(_amountCtrl.text),
+    //   },
+    // };
+
+		var d = DateTime.now().toString().split(" ").toList()[0];
+    d = d.split("-").reversed.toList().join("-");
     var date = {
-      DateTime.now().toString().split(" ").toList()[0]: {
+      d: {
         "pid": widget.patientId,
-        "amount": (_amountCtrl.text == "") ? 0 : int.parse(_amountCtrl.text),
+        "amount": (_amountCtrl.text == "") ? 0 : double.parse(_amountCtrl.text).toStringAsFixed(2),
       },
     };
 

@@ -10,10 +10,10 @@ class DateDetail extends StatelessWidget {
     var total = 0.0;
     for (var i in details) {
       print(total);
-      total += i["amount"];
+      total += double.parse(i["amount"]);
     }
 
-    return total.toString();
+    return total.toStringAsFixed(2);
   }
 
   Widget disp(text, {size = 23.0}) {
@@ -61,7 +61,7 @@ class DateDetail extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                disp("Total: " + totalAmt(), size: 30.0),
+                disp("Total: " + totalAmt() + " Rs.", size: 30.0),
                 // disp(totalAmt()),
                 // Expanded(
                 //   child: Column(
