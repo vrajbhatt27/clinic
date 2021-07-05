@@ -1,6 +1,4 @@
-import '../Providers/patients.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DateDetail extends StatelessWidget {
   final details;
@@ -51,7 +49,10 @@ class DateDetail extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [disp("${i+1}) $name"), disp(details[i]["amount"].toString())],
+                children: [
+                  disp("${i + 1}) $name"),
+                  disp(details[i]["amount"].toString())
+                ],
               ),
             );
           }

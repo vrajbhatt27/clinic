@@ -6,6 +6,11 @@ import '../Widgets/searchPatient.dart';
 import '../Widgets/searchDate.dart';
 // import '../Widgets/patientFormNew.dart';
 
+enum menuItem {
+  import,
+  export,
+}
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -190,6 +195,50 @@ class _MyHomePageState extends State<MyHomePage> {
     showDialogBox("Message", "New Patient Added");
   }
 
+  Future<void> _importData() async {
+    String s1 = "", s2 = "";
+    bool task1 = true;
+    bool task2 = true;
+    var res = await Provider.of<Patients>(context, listen: false)
+        .getDataFromStorage();
+
+    var dateRes =
+        await Provider.of<Patients>(context, listen: false).datesFromStorage();
+
+    if (res) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text("Data Imported Successfully"),
+      //   ),
+      // );
+      s1 = "Data Imported Successfully";
+    } else {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text("Can't Import Data"),
+      //   ),
+      // );
+      s1 = "Can not Import data";
+      task1 = false;
+    }
+    if (dateRes) {
+      s2 = "Dates Imported Successfully";
+    } else {
+      s2 = "Can not import dates";
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text("Can't Import Dates !!!!!!!!"),
+      //   ),
+      // );
+      task2 = false;
+    }
+    if (task1 || task2) {
+      exitApp(s1, s2);
+    } else {
+      showDialogBox("Message", "No Files Present");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,53 +249,69 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: [
           SearchDate(),
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () async {
-              String s1 = "", s2 = "";
-              bool task1 = true;
-              bool task2 = true;
-              var res = await Provider.of<Patients>(context, listen: false)
-                  .getDataFromStorage();
+          // IconButton(
+          //   icon: Icon(Icons.save),
+          //   onPressed: () async {
+          //     String s1 = "", s2 = "";
+          //     bool task1 = true;
+          //     bool task2 = true;
+          //     var res = await Provider.of<Patients>(context, listen: false)
+          //         .getDataFromStorage();
 
-              var dateRes = await Provider.of<Patients>(context, listen: false)
-                  .datesFromStorage();
+          //     var dateRes = await Provider.of<Patients>(context, listen: false)
+          //         .datesFromStorage();
 
-              if (res) {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text("Data Imported Successfully"),
-                //   ),
-                // );
-                s1 = "Data Imported Successfully";
-              } else {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text("Can't Import Data"),
-                //   ),
-                // );
-                s1 = "Can not Import data";
-                task1 = false;
+          //     if (res) {
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Data Imported Successfully"),
+          //       //   ),
+          //       // );
+          //       s1 = "Data Imported Successfully";
+          //     } else {
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Can't Import Data"),
+          //       //   ),
+          //       // );
+          //       s1 = "Can not Import data";
+          //       task1 = false;
+          //     }
+          //     if (dateRes) {
+          //       s2 = "Dates Imported Successfully";
+          //     } else {
+          //       s2 = "Can not import dates";
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Can't Import Dates !!!!!!!!"),
+          //       //   ),
+          //       // );
+          //       task2 = false;
+          //     }
+          //     if (task1 || task2) {
+          //       exitApp(s1, s2);
+          //     } else {
+          //       showDialogBox("Message", "No Files Present");
+          //     }
+          //   },
+          // ),
+          SearchPatient(),
+          PopupMenuButton(
+            itemBuilder: (ctx) {
+              return ["Import Data", "Export Data"].map((choice) {
+                return PopupMenuItem(child: Text(choice), value: choice);
+              }).toList();
+            },
+            onSelected: (choice) {
+              if (choice.toString().contains("Import")) {
+                _importData();
               }
-              if (dateRes) {
-                s2 = "Dates Imported Successfully";
-              } else {
-                s2 = "Can not import dates";
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text("Can't Import Dates !!!!!!!!"),
-                //   ),
-                // );
-                task2 = false;
-              }
-              if (task1 || task2) {
-                exitApp(s1, s2);
-              } else {
-                showDialogBox("Message", "No Files Present");
+
+              if (choice.toString().contains("Export")) {
+                print("Data Exported");
               }
             },
           ),
-          SearchPatient(),
         ],
       ),
       body: RefreshIndicator(
