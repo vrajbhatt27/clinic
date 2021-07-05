@@ -95,12 +95,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _amountCtrl.dispose();
   }
 
-  showDialogBox() {
+  showDialogBox(String m1, String m2) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Message"),
-        content: Text("New Patient Added"),
+        title: Text(m1),
+        content: Text(m2),
         actions: [
           TextButton(
             onPressed: () {
@@ -123,13 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text("The app will be closed."),
-        content: Column(
-          children: [
-            Text(s1),
-            Text(s2),
-            Text("Please restart the app to continue."),
-          ],
-        ),
+        content: Text("$s1\n$s2\nPlease Restart the app to continue"),
         actions: [
           TextButton(
             onPressed: () {
@@ -181,17 +175,19 @@ class _MyHomePageState extends State<MyHomePage> {
       "amount": _amountCtrl.text,
     };
 
+    var d = DateTime.now().toString().split(" ").toList()[0];
+    d = d.split("-").reversed.toList().join("-");
     var date = {
-      DateTime.now().toString().split(" ").toList()[0]: {
+      d: {
         "pid": data["id"],
-        "amount": (_amountCtrl.text == "") ? 0 : int.parse(_amountCtrl.text),
+        "amount": (_amountCtrl.text == "") ? 0 : double.parse(_amountCtrl.text),
       },
     };
 
     Provider.of<Patients>(context, listen: false).addData(data);
     Provider.of<Patients>(context, listen: false).addDate(date);
 
-    showDialogBox();
+    showDialogBox("Message", "New Patient Added");
   }
 
   @override
@@ -245,6 +241,8 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               if (task1 || task2) {
                 exitApp(s1, s2);
+              } else {
+                showDialogBox("Message", "No Files Present");
               }
             },
           ),
@@ -558,7 +556,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             Container(
                               margin: EdgeInsets.only(left: 180),
                               child: ElevatedButton(
-                                onPressed: _saveForm,
+                                onPressed: () {
+                                  try {
+                                    _saveForm();
+                                  } catch (e) {
+                                    showDialogBox("Error", e.toString());
+                                  }
+                                },
                                 child: Text("Save"),
                               ),
                             ),
