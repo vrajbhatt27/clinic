@@ -10,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Directory dir = await path.getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+	
   runApp(MyApp());
 }
 
