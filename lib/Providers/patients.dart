@@ -43,7 +43,7 @@ class Patients with ChangeNotifier {
     notifyListeners();
   }
 
-  addData(data) async {
+  Future<void> addData(data) async {
     var box = await Hive.openBox("patients");
     // box.clear();
     box.put(data["id"], data);
@@ -56,7 +56,7 @@ class Patients with ChangeNotifier {
     print("File saved");
   }
 
-  addDate(date) async {
+  Future<void> addDate(date) async {
     var box = await Hive.openBox("Dates");
     var key = date.keys.toList()[0];
     if (box.containsKey(key)) {

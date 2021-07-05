@@ -189,8 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     };
 
-    Provider.of<Patients>(context, listen: false).addData(data);
-    Provider.of<Patients>(context, listen: false).addDate(date);
+    await Provider.of<Patients>(context, listen: false).addData(data);
+    await Provider.of<Patients>(context, listen: false).addDate(date);
 
     showDialogBox("Message", "New Patient Added");
   }
@@ -239,6 +239,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<bool> _exportData() async {
+    bool success = false;
+    success = await Provider.of<Patients>(context, listen: false).saveFile();
+    success =
+        await Provider.of<Patients>(context, listen: false).saveDatesFile();
+
+    return success;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,52 +258,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: [
           SearchDate(),
-          // IconButton(
-          //   icon: Icon(Icons.save),
-          //   onPressed: () async {
-          //     String s1 = "", s2 = "";
-          //     bool task1 = true;
-          //     bool task2 = true;
-          //     var res = await Provider.of<Patients>(context, listen: false)
-          //         .getDataFromStorage();
-
-          //     var dateRes = await Provider.of<Patients>(context, listen: false)
-          //         .datesFromStorage();
-
-          //     if (res) {
-          //       // ScaffoldMessenger.of(context).showSnackBar(
-          //       //   SnackBar(
-          //       //     content: Text("Data Imported Successfully"),
-          //       //   ),
-          //       // );
-          //       s1 = "Data Imported Successfully";
-          //     } else {
-          //       // ScaffoldMessenger.of(context).showSnackBar(
-          //       //   SnackBar(
-          //       //     content: Text("Can't Import Data"),
-          //       //   ),
-          //       // );
-          //       s1 = "Can not Import data";
-          //       task1 = false;
-          //     }
-          //     if (dateRes) {
-          //       s2 = "Dates Imported Successfully";
-          //     } else {
-          //       s2 = "Can not import dates";
-          //       // ScaffoldMessenger.of(context).showSnackBar(
-          //       //   SnackBar(
-          //       //     content: Text("Can't Import Dates !!!!!!!!"),
-          //       //   ),
-          //       // );
-          //       task2 = false;
-          //     }
-          //     if (task1 || task2) {
-          //       exitApp(s1, s2);
-          //     } else {
-          //       showDialogBox("Message", "No Files Present");
-          //     }
-          //   },
-          // ),
           SearchPatient(),
           PopupMenuButton(
             itemBuilder: (ctx) {
@@ -302,13 +265,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 return PopupMenuItem(child: Text(choice), value: choice);
               }).toList();
             },
-            onSelected: (choice) {
+            onSelected: (choice) async {
               if (choice.toString().contains("Import")) {
                 _importData();
               }
 
               if (choice.toString().contains("Export")) {
-                print("Data Exported");
+                var res = await _exportData();
+                if (res) {
+                  showDialogBox("Message", "Data Exported Successfully");
+                } else {
+                  showDialogBox("Message", "!!! An error occured !!!");
+                }
               }
             },
           ),
@@ -652,3 +620,51 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+// IconButton(
+          //   icon: Icon(Icons.save),
+          //   onPressed: () async {
+          //     String s1 = "", s2 = "";
+          //     bool task1 = true;
+          //     bool task2 = true;
+          //     var res = await Provider.of<Patients>(context, listen: false)
+          //         .getDataFromStorage();
+
+          //     var dateRes = await Provider.of<Patients>(context, listen: false)
+          //         .datesFromStorage();
+
+          //     if (res) {
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Data Imported Successfully"),
+          //       //   ),
+          //       // );
+          //       s1 = "Data Imported Successfully";
+          //     } else {
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Can't Import Data"),
+          //       //   ),
+          //       // );
+          //       s1 = "Can not Import data";
+          //       task1 = false;
+          //     }
+          //     if (dateRes) {
+          //       s2 = "Dates Imported Successfully";
+          //     } else {
+          //       s2 = "Can not import dates";
+          //       // ScaffoldMessenger.of(context).showSnackBar(
+          //       //   SnackBar(
+          //       //     content: Text("Can't Import Dates !!!!!!!!"),
+          //       //   ),
+          //       // );
+          //       task2 = false;
+          //     }
+          //     if (task1 || task2) {
+          //       exitApp(s1, s2);
+          //     } else {
+          //       showDialogBox("Message", "No Files Present");
+          //     }
+          //   },
+          // ),
