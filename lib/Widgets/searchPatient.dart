@@ -51,7 +51,7 @@ class CustomDelegate<T> extends SearchDelegate<T> {
     if (query.isNotEmpty)
       listToShow = data
           .where((e) =>
-              (e["name"].toLowerCase()).contains(query.toLowerCase()) &&
+              (e["name"].toLowerCase()).contains(query.toLowerCase()) ||
               (e["name"].toLowerCase()).startsWith(query.toLowerCase()))
           .toList();
     else
