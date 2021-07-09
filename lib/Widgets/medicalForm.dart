@@ -62,7 +62,7 @@ class _MedicalFormState extends State<MedicalForm> {
     var date = {
       d: {
         "pid": widget.patientId,
-        "amount": (_amountCtrl.text == "") ? 0 : double.parse(_amountCtrl.text).toStringAsFixed(2),
+        "amount": (_amountCtrl.text == "") ? "0.0" : double.parse(_amountCtrl.text).toStringAsFixed(2),
       },
     };
 

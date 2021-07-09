@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var date = {
       d: {
         "pid": data["id"],
-        "amount": (_amountCtrl.text == "") ? 0 : double.parse(_amountCtrl.text).toStringAsFixed(2),
+        "amount": (_amountCtrl.text == "") ? "0.0" : double.parse(_amountCtrl.text).toStringAsFixed(2),
       },
     };
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class PatientRecordsCard extends StatefulWidget {
   final details;
@@ -26,7 +27,7 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
     return Text(
       text,
       style: TextStyle(
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
         decoration: underline ? TextDecoration.underline : null,
       ),
@@ -37,12 +38,15 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
   Widget generalInfo(String t1, String t2) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 3, left: 8, right: 5),
-      child: Row(
-        children: [
-          disp(t1),
-          SizedBox(width: 10),
-          disp(t2),
-        ],
+      child: SingleChildScrollView(
+				scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            disp(t1),
+            SizedBox(width: 10),
+            disp(t2),
+          ],
+        ),
       ),
     );
   }
@@ -86,25 +90,27 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                generalInfo("Date:", "${widget.date} (${widget.time})"),
+                Expanded(child: generalInfo("Date:", "${widget.date} (${widget.time})")),
                 IconButton(
-                  icon: Icon(
-                    showDetails
-                        ? Icons.keyboard_arrow_down
-                        : Icons.keyboard_arrow_left,
-                    size: 35,
+                    icon: Icon(
+                      showDetails
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_left,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      history =
+                          widget.details["history"].toString().split("\n");
+                      symptoms =
+                          widget.details["symptoms"].toString().split("\n");
+                      medicines =
+                          widget.details["medicines"].toString().split("\n");
+                      setState(() {
+                        showDetails = !showDetails;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    history = widget.details["history"].toString().split("\n");
-                    symptoms =
-                        widget.details["symptoms"].toString().split("\n");
-                    medicines =
-                        widget.details["medicines"].toString().split("\n");
-                    setState(() {
-                      showDetails = !showDetails;
-                    });
-                  },
-                ),
+                
               ],
             ),
             if (showDetails)
@@ -116,23 +122,26 @@ class _PatientRecordsCardState extends State<PatientRecordsCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         generalInfo("BP:", widget.details["bp"]),
-                        generalInfo("Pulse", widget.details["pulse"]),
+                        generalInfo("Pulse:", widget.details["pulse"]),
                       ],
                     ),
                     IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          infoInList(history, "Medical History"),
-                          VerticalDivider(
-                            thickness: 1,
-                            color: Colors.black,
-                            width: 10,
-                            indent: 15,
-                            endIndent: 10,
-                          ),
-                          infoInList(symptoms, "Symptoms"),
-                        ],
+                      child: SingleChildScrollView(
+												scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            infoInList(history, "Medical History"),
+                            VerticalDivider(
+                              thickness: 1,
+                              color: Colors.black,
+                              width: 10,
+                              indent: 15,
+                              endIndent: 10,
+                            ),
+                            infoInList(symptoms, "Symptoms"),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 5),
